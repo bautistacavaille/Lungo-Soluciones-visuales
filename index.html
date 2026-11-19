@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lungo | Soluciones Visuales</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="img/trazo.png">
+
+    <style>
+        /* --- RESET Y VARIABLES --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --color-primary: #2d2d86;
+            --color-text: #000000;
+            --color-bg: #ffffff;
+            --color-gray: #f6f6f6;
+            --font-main: 'Inter', sans-serif;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            overflow-x: hidden;
+            line-height: 1.6;
+            padding-top: 40px; 
+        }
+
+        /* --- CURSOR AMIGABLE --- */
+        .cursor {
+            width: 24px; height: 24px;
+            border: 2px solid var(--color-primary);
+            border-radius: 50%;
+            position: fixed;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 9999;
+            transition: width 0.2s, height 0.2s, background-color 0.2s;
+        }
+        .cursor-dot {
+            width: 6px; height: 6px;
+            background-color: var(--color-primary);
+            border-radius: 50%;
+            position: fixed;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 10000;
+        }
+
+        /* --- SOCALO SUPERIOR INFINITO --- */
+        .top-marquee {
+            width: 100%; background-color: var(--color-primary); color: white;
+            padding: 8px 0; overflow: hidden; position: fixed; top: 0; left: 0; z-index: 100;
+            display: flex; white-space: nowrap;
+        }
+        .marquee-content { display: flex; animation: marquee 20s linear infinite; }
+        .marquee-content span { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; padding: 0 10px; }
+        .dot { color: #1a1a5c; }
+        @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+        /* --- UTILIDADES --- */
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 40px; }
+        .section-title { font-size: clamp(2.2rem, 4vw, 3.8rem); font-weight: 900; line-height: 1.1; letter-spacing: -2px; margin-bottom: 20px; }
+        .section-subtitle { font-size: 0.7rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--color-primary); margin-bottom: 15px; display: block; }
+        .text-base { font-size: 1.1rem; font-weight: 500; color: #333; }
+        
+        .btn { display: inline-block; padding: 14px 32px; border-radius: 50px; text-decoration: none; font-weight: 600; font-size: 0.9rem; transition: all 0.3s ease; border: 2px solid transparent; }
+        .btn-primary { background-color: var(--color-primary); color: white; }
+        .btn-primary:hover { background-color: transparent; border-color: var(--color-primary); color: var(--color-primary); transform: translateY(-2px); }
+
+        /* --- HEADER --- */
+        .header { position: absolute; top: 40px; width: 100%; z-index: 90; padding: 20px 0; }
+        .header .container { display: flex; justify-content: space-between; align-items: center; }
+        .logo-img { height: 35px; width: auto; display: block; }
+        .nav-menu { display: flex; gap: 40px; }
+        .nav-menu a { text-decoration: none; color: var(--color-text); font-weight: 600; font-size: 0.85rem; transition: color 0.3s ease; }
+        .nav-menu a:hover { color: var(--color-primary); }
+
+        /* --- SECCIÓN HERO --- */
+        .hero { padding: 150px 0 80px 0; display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 40px; min-height: auto; }
+        .hero-text { z-index: 2; }
+        .hero-title { font-size: clamp(3.5rem, 6vw, 5.5rem); line-height: 1.05; font-weight: 900; letter-spacing: -3px; color: #000; margin-bottom: 20px; }
+        .hero-description { font-size: 1.15rem; line-height: 1.6; max-width: 460px; margin-bottom: 30px; font-weight: 500; color: #333; }
+        .buttons-group { display: flex; gap: 15px; }
+        .btn-secondary { background-color: transparent; color: #000; border: 1.5px solid #ddd; }
+        .btn-secondary:hover { border-color: var(--color-primary); color: var(--color-primary); }
+        
+        .hero-graphics { display: flex; justify-content: flex-end; align-items: center; position: relative; }
+        
+        /* --- ANIMACIÓN DEL TRAZO (LLENADO IZQUIERDA A DERECHA) --- */
+        .trazo-contenedor { 
+            position: relative; 
+            width: 110%; 
+            max-width: 500px; 
+            margin-right: -50px; 
+            
+            -webkit-mask-image: linear-gradient(to right, black 0%, transparent 100%);
+            mask-image: linear-gradient(to right, black 0%, transparent 100%);
+            -webkit-mask-size: 200% 100%;
+            mask-size: 200% 100%;
+            
+            -webkit-mask-position: 100% 0;
+            mask-position: 100% 0;
+            
+            animation: llenarProceso 6s ease-in-out infinite; 
+        }
+        
+        .trazo-img { width: 100%; display: block; transition: transform 0.3s ease; }
+        .trazo-contenedor:hover .trazo-img { transform: scale(1.02); }
+        
+        @keyframes llenarProceso { 
+            0% { -webkit-mask-position: 100% 0; mask-position: 100% 0; } 
+            50% { -webkit-mask-position: 0% 0; mask-position: 0% 0; } 
+            100% { -webkit-mask-position: 100% 0; mask-position: 100% 0; } 
+        }
+
+        /* --- SECCIÓN ESTUDIO --- */
+        .section-estudio { padding: 80px 0; }
+        .grid-2-col { display: grid; grid-template-columns: 1fr 1.5fr; gap: 60px; }
+        .estudio-right p { font-size: clamp(1.4rem, 2vw, 1.8rem); font-weight: 700; line-height: 1.4; margin-bottom: 25px; letter-spacing: -0.5px; }
+        .estudio-right .text-small { font-size: 1.1rem; font-weight: 400; line-height: 1.7; max-width: 600px; color: #555; }
+
+        /* --- SECCIÓN SERVICIOS --- */
+        .section-servicios { padding: 80px 0; background-color: var(--color-gray); }
+        .servicios-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 40px; }
+        .servicios-header p { max-width: 300px; font-weight: 500; font-size: 1rem; color: #555; }
+        .grid-servicios { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+        .card-servicio { background: white; border-radius: 20px; padding: 25px; height: 200px; display: flex; flex-direction: column; justify-content: space-between; transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); border: 1px solid rgba(0,0,0,0.04); }
+        .card-servicio:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.05); }
+        .card-servicio.destacado { background-color: var(--color-primary); color: white; border: none; }
+        .card-num { font-size: 0.8rem; font-weight: 700; color: var(--color-primary); }
+        .destacado .card-num { color: rgba(255,255,255,0.6); }
+        .card-title { font-size: 1.3rem; font-weight: 800; line-height: 1.2; }
+
+        /* --- SECCIÓN PROCESO --- */
+        .section-proceso { padding: 80px 0; }
+        .proceso-linea { display: flex; justify-content: space-between; align-items: center; margin-top: 50px; position: relative; }
+        .proceso-linea::before { content: ''; position: absolute; top: 10px; left: 0; width: 100%; height: 1px; background-color: #e0e0e0; z-index: 1; }
+        .paso { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: flex-start; width: 20%; }
+        .punto { width: 18px; height: 18px; border-radius: 50%; background-color: white; border: 2px solid var(--color-primary); margin-bottom: 15px; }
+        .paso.activo .punto { background-color: var(--color-primary); }
+        .paso-num { font-size: 0.8rem; font-weight: 700; color: var(--color-primary); margin-bottom: 5px; }
+        .paso-title { font-size: 1.2rem; font-weight: 800; }
+
+        /* --- SECCIÓN PROYECTOS --- */
+        .section-proyectos { padding: 80px 0; }
+        .filtros { display: flex; gap: 10px; margin-bottom: 30px; flex-wrap: wrap; }
+        .filtro { padding: 8px 16px; border-radius: 50px; border: 1px solid #ddd; background: transparent; font-size: 0.85rem; font-weight: 600; color: #333; cursor: pointer; transition: all 0.3s; }
+        .filtro:hover, .filtro.activo { background-color: var(--color-primary); color: white; border-color: var(--color-primary); }
+        .grid-proyectos { display: grid; grid-template-columns: repeat(3, 1fr); grid-auto-rows: minmax(240px, auto); gap: 20px; }
+        
+        .proyecto-card { 
+            background: var(--color-gray); 
+            border-radius: 20px; 
+            padding: 25px; 
+            position: relative; 
+            overflow: hidden; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: space-between; 
+            transition: transform 0.3s ease;
+            text-decoration: none;
+            color: var(--color-text);
+        }
+        .proyecto-card:hover { transform: scale(1.02); }
+        .proyecto-card.azul { background-color: var(--color-primary); color: white; grid-row: span 2; }
+        .proyecto-card.blanco { background-color: white; border: 1px solid #eaeaea; }
+        .proyecto-title { font-size: 1.6rem; font-weight: 800; line-height: 1.2; margin-top: 15px; }
+        .proyecto-tag { font-size: 0.8rem; font-weight: 600; opacity: 0.8; }
+        .grafico-circulo { width: 60px; height: 60px; border-radius: 50%; border: 2px solid var(--color-primary); }
+        .azul .grafico-circulo { border-color: white; }
+        .grafico-letra { font-size: 3.5rem; font-weight: 900; color: var(--color-primary); line-height: 1; }
+        .azul .grafico-letra { color: white; }
+
+        /* --- SECCIÓN MANIFIESTO --- */
+        .section-manifiesto { padding: 50px; background-color: var(--color-primary); border-radius: 30px; margin: 80px auto; max-width: 1100px; color: white; position: relative; }
+        .manifiesto-title { font-size: clamp(2.2rem, 4.5vw, 3.5rem); font-weight: 900; line-height: 1.1; letter-spacing: -2px; max-width: 900px; margin-top: 30px; }
+        .manifiesto-linea { width: 100px; height: 2px; background: white; margin-top: 40px; }
+
+        /* --- SECCIÓN CONTACTO & FOOTER --- */
+        .section-contacto { padding: 80px 0; }
+        .contacto-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 60px; margin-bottom: 60px; }
+        .footer { padding: 50px 0; border-top: 1px solid #eaeaea; }
+        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 30px; }
+        .footer-logo-img { height: 35px; width: auto; margin-bottom: 10px; }
+        .footer-tagline { color: var(--color-primary); font-weight: 700; margin-bottom: 20px; }
+        .footer-links h4 { font-size: 0.8rem; text-transform: uppercase; color: var(--color-primary); margin-bottom: 15px; letter-spacing: 1px; }
+        .footer-links a { display: block; color: #333; text-decoration: none; margin-bottom: 10px; font-weight: 500; font-size: 0.95rem; }
+        .footer-links a:hover { color: var(--color-primary); }
+
+        /* --- ANIMACIONES AL SCROLL --- */
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.25, 0.8, 0.25, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 1024px) {
+            .grid-servicios { grid-template-columns: repeat(2, 1fr); }
+            .grid-proyectos { grid-template-columns: repeat(2, 1fr); }
+            .proyecto-card.azul { grid-row: span 1; }
+            .hero { grid-template-columns: 1fr; text-align: left; padding-top: 120px;}
+            .hero-graphics { justify-content: center; margin-top: 30px; }
+            .trazo-contenedor { margin-right: 0; width: 100%; max-width: 400px; }
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 0 25px; }
+            .header .nav-menu { display: none; }
+            .grid-2-col, .contacto-grid, .footer-grid { grid-template-columns: 1fr; gap: 30px; }
+            .servicios-header { flex-direction: column; align-items: flex-start; gap: 15px; }
+            .grid-servicios, .grid-proyectos { grid-template-columns: 1fr; }
+            .proceso-linea { flex-direction: column; align-items: flex-start; gap: 30px; }
+            .proceso-linea::before { display: none; }
+            .paso { width: 100%; flex-direction: row; align-items: center; gap: 15px; }
+            .punto { margin-bottom: 0; }
+            .section-manifiesto { margin: 60px 20px; padding: 30px; }
+            .cursor, .cursor-dot { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="cursor"></div>
+    <div class="cursor-dot"></div>
+
+    <div class="top-marquee">
+        <div class="marquee-content">
+            <span>LUNGO</span> <span class="dot">|</span> <span>SOLUCIONES GRAFICAS</span> <span class="dot">●</span>
+            <span>LUNGO</span> <span class="dot">|</span> <span>SOLUCIONES GRAFICAS</span> <span class="dot">●</span>
+            <span>LUNGO</span> <span class="dot">|</span> <span>SOLUCIONES GRAFICAS</span> <span class="dot">●</span>
+            <span>LUNGO</span> <span class="dot">|</span> <span>SOLUCIONES GRAFICAS</span> <span class="dot">●</span>
+            <span>LUNGO</span> <span class="dot">|</span> <span>SOLUCIONES GRAFICAS</span> <span class="dot">●</span>
+            <span>LUNGO</span> <span class="dot">|</span> <span>SOLUCIONES GRAFICAS</span> <span class="dot">●</span>
+            <span>LUNGO</span> <span class="dot">|</span> <span>SOLUCIONES GRAFICAS</span> <span class="dot">●</span>
+            <span>LUNGO</span> <span class="dot">|</span> <span>SOLUCIONES GRAFICAS</span> <span class="dot">●</span>
+            <span>LUNGO</span> <span class="dot">|</span> <span>SOLUCIONES GRAFICAS</span> <span class="dot">●</span>
+            <span>LUNGO</span> <span class="dot">|</span> <span>SOLUCIONES GRAFICAS</span> <span class="dot">●</span>
+        </div>
+    </div>
+
+    <header class="header">
+        <div class="container">
+            <a href="index.html">
+                <img src="img/marca.png" alt="Lungo Logo" class="logo-img">
+            </a>
+            <nav class="nav-menu">
+                <a href="#estudio">Estudio</a>
+                <a href="#servicios">Servicios</a>
+                <a href="#proceso">Proceso</a>
+                <a href="#proyectos">Proyectos</a>
+                <a href="#contacto">Contacto</a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero container">
+        <div class="hero-text">
+            <span class="section-subtitle">ESTUDIO DE DISEÑO GRÁFICO</span>
+            <h1 class="hero-title">Del proceso<br>a la forma.</h1>
+            <p class="hero-description">
+                Lungo es un estudio de diseño gráfico especializado en identidad visual, branding y comunicación. Transformamos ideas en soluciones visuales claras, funcionales y con personalidad.
+            </p>
+            <div class="buttons-group">
+                <a href="#proyectos" class="btn btn-primary">Ver proyectos</a>
+                <a href="#contacto" class="btn btn-secondary">Hablemos</a>
+            </div>
+        </div>
+        <div class="hero-graphics">
+            <div class="trazo-contenedor">
+                <img src="img/trazo.png" alt="Trazo Lungo" class="trazo-img">
+            </div>
+        </div>
+    </section>
+
+    <section id="estudio" class="section-estudio">
+        <div class="container grid-2-col reveal">
+            <div>
+                <span class="section-subtitle">01 / ESTUDIO</span>
+                <h2 class="section-title">¿Qué es<br>Lungo?</h2>
+            </div>
+            <div class="estudio-right">
+                <p>Lungo entiende el diseño como un proceso de construcción: una forma de ordenar, probar y convertir ideas complejas en sistemas visuales claros.</p>
+                <p class="text-small">Trabajamos junto a marcas, proyectos y organizaciones que necesitan comunicar con precisión. Combinamos pensamiento estratégico, creatividad, experimentación y claridad visual para construir identidades con criterio, funcionalidad y personalidad.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="servicios" class="section-servicios">
+        <div class="container reveal">
+            <span class="section-subtitle">02 / SERVICIOS</span>
+            <div class="servicios-header">
+                <h2 class="section-title">Sistemas visuales para<br>marcas en movimiento.</h2>
+                <p>Claridad estratégica, identidad y comunicación aplicada.</p>
+            </div>
+            <div class="grid-servicios">
+                <div class="card-servicio"><span class="card-num">01</span><h3 class="card-title">Identidad Visual</h3></div>
+                <div class="card-servicio"><span class="card-num">02</span><h3 class="card-title">Branding</h3></div>
+                <div class="card-servicio"><span class="card-num">03</span><h3 class="card-title">Redes Sociales</h3></div>
+                <div class="card-servicio destacado"><span class="card-num">04</span><h3 class="card-title">Packaging</h3></div>
+                <div class="card-servicio"><span class="card-num">05</span><h3 class="card-title">Comunicación Visual</h3></div>
+                <div class="card-servicio"><span class="card-num">06</span><h3 class="card-title">Cartelería</h3></div>
+                <div class="card-servicio"><span class="card-num">07</span><h3 class="card-title">Señalética</h3></div>
+                <div class="card-servicio"><span class="card-num">08</span><h3 class="card-title">Diseño Editorial</h3></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="proceso" class="section-proceso">
+        <div class="container reveal">
+            <span class="section-subtitle">03 / PROCESO</span>
+            <div class="grid-2-col" style="margin-bottom: 30px;">
+                <h2 class="section-title">Construir antes<br>de diseñar.</h2>
+                <p class="text-base" style="max-width: 500px;">Cada decisión visual nace de escuchar, analizar y ordenar. La forma aparece cuando el proceso encuentra claridad.</p>
+            </div>
+            
+            <div class="proceso-linea">
+                <div class="paso activo"><div class="punto"></div><span class="paso-num">01</span><h4 class="paso-title">Escuchar</h4></div>
+                <div class="paso"><div class="punto"></div><span class="paso-num">02</span><h4 class="paso-title">Analizar</h4></div>
+                <div class="paso"><div class="punto"></div><span class="paso-num">03</span><h4 class="paso-title">Diseñar</h4></div>
+                <div class="paso"><div class="punto"></div><span class="paso-num">04</span><h4 class="paso-title">Construir</h4></div>
+                <div class="paso activo"><div class="punto"></div><span class="paso-num">05</span><h4 class="paso-title">Comunicar</h4></div>
+            </div>
+        </div>
+    </section>
+
+    <section id="proyectos" class="section-proyectos">
+        <div class="container reveal">
+            <span class="section-subtitle">04 / PROYECTOS</span>
+            <h2 class="section-title">Trabajos claros,<br>útiles y memorables.</h2>
+            
+            <div class="filtros">
+                <button class="filtro activo">Todos</button>
+                <button class="filtro">Branding</button>
+                <button class="filtro">Packaging</button>
+                <button class="filtro">Editorial</button>
+                <button class="filtro">Eventos</button>
+            </div>
+
+            <div class="grid-proyectos">
+                
+                <!-- EL ENLACE A BRANDING.HTML ESTÁ ACÁ -->
+                <a href="branding.html" class="proyecto-card azul">
+                    <span class="proyecto-tag">Branding / Identidad Visual</span>
+                    <h3 class="proyecto-title">Sistema de identidad</h3>
+                    <div class="grafico-letra">L</div>
+                </a>
+
+                <a href="#" class="proyecto-card blanco">
+                    <div class="grafico-circulo"></div>
+                    <h3 class="proyecto-title">Materia y envase</h3>
+                    <span class="proyecto-tag" style="color: var(--color-primary);">Packaging</span>
+                </a>
+
+                <a href="#" class="proyecto-card blanco">
+                    <h3 class="proyecto-title">Archivo editorial</h3>
+                    <div style="width: 100%; height: 1px; background: var(--color-primary); margin: 15px 0;"></div>
+                    <span class="proyecto-tag" style="color: var(--color-primary);">Editorial</span>
+                </a>
+
+                <a href="#" class="proyecto-card azul">
+                    <span class="proyecto-tag">Eventos</span>
+                    <h3 class="proyecto-title">Identidad para eventos</h3>
+                </a>
+
+                <a href="#" class="proyecto-card blanco">
+                    <div style="display: flex; gap: 15px; align-items: center;">
+                        <div class="grafico-letra" style="color: var(--color-primary);">L</div>
+                        <div class="grafico-circulo"></div>
+                    </div>
+                    <h3 class="proyecto-title">Campaña visual</h3>
+                    <span class="proyecto-tag" style="color: var(--color-primary);">Comunicación</span>
+                </a>
+
+                <a href="#" class="proyecto-card blanco">
+                    <h3 class="proyecto-title">Lenguaje de marca</h3>
+                    <span class="proyecto-tag" style="color: var(--color-primary);">Branding</span>
+                </a>
+
+            </div>
+        </div>
+    </section>
+
+    <section class="section-manifiesto reveal">
+        <div class="container">
+            <span class="section-subtitle" style="color: rgba(255,255,255,0.6);">MANIFIESTO</span>
+            <div style="position: absolute; top: 50px; right: 50px; width: 40px; height: 40px; border: 1px solid rgba(255,255,255,0.3); border-radius: 50%;"></div>
+            <h2 class="manifiesto-title">El diseño no empieza cuando aparece una idea. Empieza cuando entendemos el problema.</h2>
+            <div class="manifiesto-linea"></div>
+        </div>
+    </section>
+
+    <section id="contacto" class="section-contacto">
+        <div class="container reveal">
+            <div class="contacto-grid">
+                <div>
+                    <span class="section-subtitle">05 / CONTACTO</span>
+                    <h2 class="section-title">¿Tu marca comunica<br>lo que realmente sos?</h2>
+                </div>
+                <div>
+                    <p class="text-base" style="margin-bottom: 30px; font-weight: 400;">Si estás construyendo una marca, rediseñando tu identidad o buscando una forma más clara de comunicar, podemos empezar por entender el problema y diseñar una solución con intención.</p>
+                    <a href="#" class="btn btn-primary">Iniciar proyecto</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <img src="img/marca.png" alt="Lungo Logo" class="footer-logo-img">
+                    <p class="footer-tagline">Soluciones Visuales</p>
+                    <p style="font-weight: 500; margin-top: 20px; color: #555;">Del proceso a la forma.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>REDES</h4>
+                    <a href="#">Instagram</a>
+                    <a href="#">Behance</a>
+                </div>
+                <div class="footer-links">
+                    <h4>CONTACTO</h4>
+                    <a href="#">Email</a>
+                    <a href="#">WhatsApp</a>
+                    <a href="#">Ciudad: Pehuajó, Buenos Aires</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const cursor = document.querySelector('.cursor');
+        const cursorDot = document.querySelector('.cursor-dot');
+
+        if(cursor && cursorDot) {
+            document.addEventListener('mousemove', (e) => {
+                cursorDot.style.left = e.clientX + 'px';
+                cursorDot.style.top = e.clientY + 'px';
+                
+                setTimeout(() => {
+                    cursor.style.left = e.clientX + 'px';
+                    cursor.style.top = e.clientY + 'px';
+                }, 50);
+            });
+
+            const links = document.querySelectorAll('a, button');
+            links.forEach(link => {
+                link.addEventListener('mouseenter', () => {
+                    cursor.style.width = '50px';
+                    cursor.style.height = '50px';
+                    cursor.style.backgroundColor = 'rgba(45, 45, 134, 0.1)';
+                });
+                link.addEventListener('mouseleave', () => {
+                    cursor.style.width = '24px';
+                    cursor.style.height = '24px';
+                    cursor.style.backgroundColor = 'transparent';
+                });
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const reveals = document.querySelectorAll('.reveal');
+
+            const revealOnScroll = () => {
+                const windowHeight = window.innerHeight;
+                const elementVisible = 50;
+
+                reveals.forEach((reveal) => {
+                    const elementTop = reveal.getBoundingClientRect().top;
+                    if (elementTop < windowHeight - elementVisible) {
+                        reveal.classList.add('active');
+                    }
+                });
+            };
+
+            window.addEventListener('scroll', revealOnScroll);
+            revealOnScroll();
+        });
+    </script>
+
+</body>
+</html>

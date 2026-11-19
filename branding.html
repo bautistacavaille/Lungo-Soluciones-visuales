@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Branding | Lungo</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="img/trazo.png">
+
+    <style>
+        /* --- MISMOS ESTILOS BASE DEL INDEX --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --color-primary: #2d2d86;
+            --color-text: #000000;
+            --color-bg: #ffffff;
+            --color-gray: #f6f6f6;
+            --font-main: 'Inter', sans-serif;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            overflow-x: hidden;
+            line-height: 1.6;
+            padding-top: 40px; 
+        }
+
+        /* Cursor */
+        .cursor {
+            width: 24px; height: 24px;
+            border: 2px solid var(--color-primary);
+            border-radius: 50%;
+            position: fixed;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 9999;
+            transition: width 0.2s, height 0.2s, background-color 0.2s;
+        }
+        .cursor-dot {
+            width: 6px; height: 6px;
+            background-color: var(--color-primary);
+            border-radius: 50%;
+            position: fixed;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 10000;
+        }
+
+        /* Socalo infinito */
+        .top-marquee {
+            width: 100%; background-color: var(--color-primary); color: white;
+            padding: 8px 0; overflow: hidden; position: fixed; top: 0; left: 0; z-index: 100;
+            display: flex; white-space: nowrap;
+        }
+        .marquee-content { display: flex; animation: marquee 20s linear infinite; }
+        .marquee-content span { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; padding: 0 10px; }
+        .dot { color: #1a1a5c; }
+        @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+        /* Header */
+        .header { position: absolute; top: 40px; width: 100%; z-index: 90; padding: 20px 0; }
+        .header .container { display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; padding: 0 40px; }
+        .logo-img { height: 35px; width: auto; display: block; }
+        .nav-menu { display: flex; gap: 40px; }
+        .nav-menu a { text-decoration: none; color: var(--color-text); font-weight: 600; font-size: 0.85rem; transition: color 0.3s ease; }
+        .nav-menu a:hover { color: var(--color-primary); }
+
+        /* Contenedor */
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 40px; }
+
+        /* --- SECCIÓN BRANDING --- */
+        .branding-page { padding: 150px 0 100px 0; }
+
+        /* Botón volver */
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: #555;
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 40px;
+            transition: color 0.3s;
+        }
+        .back-btn:hover { color: var(--color-primary); }
+
+        /* Título */
+        .branding-header { margin-bottom: 60px; }
+        .branding-header .section-subtitle {
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--color-primary);
+            margin-bottom: 15px;
+            display: block;
+        }
+        .branding-title {
+            font-size: clamp(3rem, 6vw, 5rem);
+            font-weight: 900;
+            line-height: 1.05;
+            letter-spacing: -3px;
+            color: #000;
+        }
+
+        /* --- GRILLA DE PROYECTOS --- */
+        .grid-branding {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            margin-bottom: 80px;
+        }
+
+        /* Estilo de la tarjeta */
+        .branding-card {
+            background-color: var(--color-gray);
+            border-radius: 20px;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 350px; 
+            transition: transform 0.3s ease;
+            text-decoration: none;
+            color: var(--color-text);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .branding-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.05);
+        }
+
+        /* La imagen del proyecto */
+        .branding-img {
+            width: 100%;
+            height: 65%; 
+            object-fit: contain; 
+            margin-bottom: 15px;
+        }
+
+        /* Textos de la tarjeta */
+        .branding-info {
+            border-top: 1px solid rgba(0,0,0,0.1);
+            padding-top: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .branding-nombre {
+            font-size: 1.6rem;
+            font-weight: 800;
+            line-height: 1.1;
+        }
+
+        .branding-tag {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--color-primary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Tarjeta destacada en azul */
+        .branding-card.destacado {
+            background-color: var(--color-primary);
+            color: white;
+        }
+        .branding-card.destacado .branding-tag { color: rgba(255,255,255,0.7); }
+        .branding-card.destacado .branding-info { border-top: 1px solid rgba(255,255,255,0.2); }
+
+        /* --- FOOTER --- */
+        .footer { padding: 50px 0; border-top: 1px solid #eaeaea; }
+        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 30px; }
+        .footer-logo-img { height: 35px; width: auto; margin-bottom: 10px; }
+        .footer-tagline { color: var(--color-primary); font-weight: 700; margin-bottom: 20px; }
+        .footer-links h4 { font-size: 0.8rem; text-transform: uppercase; color: var(--color-primary); margin-bottom: 15px; letter-spacing: 1px; }
+        .footer-links a { display: block; color: #333; text-decoration: none; margin-bottom: 10px; font-weight: 500; font-size: 0.95rem; }
+        .footer-links a:hover { color: var(--color-primary); }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .grid-branding { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 0 25px; }
+            .header .nav-menu { display: none; }
+            .grid-branding { grid-template-columns: 1fr; }
+            .branding-card { height: 300px; }
+            .cursor, .cursor-dot { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- PUNTERO -->
+    <div class="cursor"></div>
+    <div class="cursor-dot"></div>
+
+    <!-- SOCALO SUPERIOR -->
+    <div class="top-marquee">
+        <div class="marquee-content">
+            <span>LUNGO</span> <span class="dot">|</span> <span>SOLUCIONES GRAFICAS</span> <span class="dot">●</span>
+            <span>LUNGO</span> <span class="dot">|</span> <span>SOLUCIONES GRAFICAS</span> <span class="dot">●</span>
+            <span>LUNGO</span> <span class="dot">|</span> <span>SOLUCIONES GRAFICAS</span> <span class="dot">●</span>
+            <span>LUNGO</span> <span class="dot">|</span> <span>SOLUCIONES GRAFICAS</span> <span class="dot">●</span>
+            <span>LUNGO</span> <span class="dot">|</span> <span>SOLUCIONES GRAFICAS</span> <span class="dot">●</span>
+            <span>LUNGO</span> <span class="dot">|</span> <span>SOLUCIONES GRAFICAS</span> <span class="dot">●</span>
+            <span>LUNGO</span> <span class="dot">|</span> <span>SOLUCIONES GRAFICAS</span> <span class="dot">●</span>
+            <span>LUNGO</span> <span class="dot">|</span> <span>SOLUCIONES GRAFICAS</span> <span class="dot">●</span>
+        </div>
+    </div>
+
+    <!-- HEADER -->
+    <header class="header">
+        <div class="container">
+            <a href="index.html">
+                <img src="img/marca.png" alt="Lungo Logo" class="logo-img">
+            </a>
+            <nav class="nav-menu">
+                <a href="index.html#estudio">Estudio</a>
+                <a href="index.html#servicios">Servicios</a>
+                <a href="index.html#proceso">Proceso</a>
+                <a href="index.html#proyectos">Proyectos</a>
+                <a href="index.html#contacto">Contacto</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- CONTENIDO -->
+    <main class="container branding-page">
+        
+        <a href="index.html" class="back-btn">← Volver a Proyectos</a>
+
+        <div class="branding-header">
+            <span class="section-subtitle">SISTEMA DE IDENTIDAD</span>
+            <h1 class="branding-title">Branding.</h1>
+        </div>
+
+        <!-- GRILLA DE PROYECTOS -->
+        <div class="grid-branding">
+            
+            <!-- PROYECTO 1: BRASSER -->
+            <a href="#" class="branding-card destacado">
+                <img src="img/brasser.png" alt="Brasser" class="branding-img">
+                <div class="branding-info">
+                    <h3 class="branding-nombre">Brasser</h3>
+                    <span class="branding-tag">Identidad</span>
+                </div>
+            </a>
+
+            <!-- PROYECTO 2: EON (AHORA CON EL ENLACE A EON.HTML) -->
+            <a href="eon.html" class="branding-card">
+                <img src="img/eon.png" alt="Eon" class="branding-img">
+                <div class="branding-info">
+                    <h3 class="branding-nombre">Eon</h3>
+                    <span class="branding-tag">Branding</span>
+                </div>
+            </a>
+
+            <!-- PROYECTO 3: Ejemplo -->
+            <a href="#" class="branding-card">
+                <div style="height: 65%; display: flex; align-items: center; justify-content: center; color: #ccc; font-size: 3rem; font-weight: 900;">3</div>
+                <div class="branding-info">
+                    <h3 class="branding-nombre">Proyecto 3</h3>
+                    <span class="branding-tag">Branding</span>
+                </div>
+            </a>
+
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <img src="img/marca.png" alt="Lungo Logo" class="footer-logo-img">
+                    <p class="footer-tagline">Soluciones Visuales</p>
+                    <p style="font-weight: 500; margin-top: 20px; color: #555;">Del proceso a la forma.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>REDES</h4>
+                    <a href="#">Instagram</a>
+                    <a href="#">Behance</a>
+                </div>
+                <div class="footer-links">
+                    <h4>CONTACTO</h4>
+                    <a href="#">Email</a>
+                    <a href="#">WhatsApp</a>
+                    <a href="#">Ciudad: Pehuajó, Buenos Aires</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- SCRIPT DEL CURSOR -->
+    <script>
+        const cursor = document.querySelector('.cursor');
+        const cursorDot = document.querySelector('.cursor-dot');
+
+        if(cursor && cursorDot) {
+            document.addEventListener('mousemove', (e) => {
+                cursorDot.style.left = e.clientX + 'px';
+                cursorDot.style.top = e.clientY + 'px';
+                
+                setTimeout(() => {
+                    cursor.style.left = e.clientX + 'px';
+                    cursor.style.top = e.clientY + 'px';
+                }, 50);
+            });
+
+            const links = document.querySelectorAll('a, .branding-card');
+            links.forEach(link => {
+                link.addEventListener('mouseenter', () => {
+                    cursor.style.width = '50px';
+                    cursor.style.height = '50px';
+                    cursor.style.backgroundColor = 'rgba(45, 45, 134, 0.1)';
+                });
+                link.addEventListener('mouseleave', () => {
+                    cursor.style.width = '24px';
+                    cursor.style.height = '24px';
+                    cursor.style.backgroundColor = 'transparent';
+                });
+            });
+        }
+    </script>
+</body>
+</html>
